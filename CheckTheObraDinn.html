@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chapter/Part Dropdowns</title>
+  <style>
+    :root {
+      --bg: #121212;
+      --fg: #e0e0e0;
+      --select-bg: #1e1e1e;
+      --select-border: #444;
+      --button-bg: #444;
+      --button-fg: #fff;
+
+      --light-bg: #ffffff;
+      --light-fg: #000000;
+      --light-select-bg: #f7f7f7;
+      --light-select-border: #ccc;
+      --light-button-bg: #ddd;
+      --light-button-fg: #000;
+
+      --valid-bg: #2e7d32;
+      --valid-fg: #ffffff;
+      --valid-border: #1b5e20;
+
+      --invalid-bg: #c62828;
+      --invalid-fg: #ffffff;
+      --invalid-border: #8e0000;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: var(--bg);
+      color: var(--fg);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Theme switch via body.light */
+    body.light {
+      --bg: var(--light-bg);
+      --fg: var(--light-fg);
+      --select-bg: var(--light-select-bg);
+      --select-border: var(--light-select-border);
+      --button-bg: var(--light-button-bg);
+      --button-fg: var(--light-button-fg);
+    }
+
+    label {
+      margin-right: 6px;
+    }
+
+    select {
+      margin: 10px;
+      padding: 6px 32px 6px 10px; /* room for custom arrow */
+      border-radius: 4px;
+      border: 1px solid var(--select-border);
+      background-color: var(--select-bg);
+      color: var(--fg);
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+
+      /* Ensure select can be styled consistently */
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--fg) 50%),
+        linear-gradient(135deg, var(--fg) 50%, transparent 50%),
+        linear-gradient(to right, transparent, transparent);
+      background-position:
+        calc(100% - 16px) calc(50% - 3px),
+        calc(100% - 11px) calc(50% - 3px),
+        calc(100% - 2.2em) 0.5em;
+      background-size:
+        6px 6px,
+        6px 6px,
+        2.2em 2.2em;
+      background-repeat: no-repeat;
+    }
+
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(100, 150, 250, 0.25);
+    }
+
+    /* Toggle button */
+    #toggleMode {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: var(--button-bg);
+      color: var(--button-fg);
+      transition: background-color 0.3s, color 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggleMode">Toggle Dark mode</button>
+
+  <h2>Story selector</h2>
+  <label>Chapter:</label>
+  <select id="chapter"></select>
+
+  <label>Part:</label>
+  <select id="part"></select>
+
+  <label>Name:</label>
+  <select id="name"></select>
+
+  <label>Cause of death:</label>
+  <select id="cause"></select>
+
+  <label>Killer:</label>
+  <select id="killer"></select>
+
+  <script>
+    // Editable backend lists
+    const names = [
+  "Unknown",
+  "Robert Witterel",
+  "William Hoscut",
+  "Edward Nichols",
+  "Martin Perrott",
+  "John Davies",
+  "Alfred Klestil",
+  "Charles Miner",
+  "Henry Evans",
+  "James Wallace",
+  "Winston Smith",
+  "Marcus Gibbs",
+  "Thomas Sefton",
+  "Emil O'Farrell",
+  "Christian Wolff",
+  "Olus Wiater",
+  "Duncan McKay",
+  "Finley Dalton",
+  "Edward Spratt",
+  "Abigail Hoscut Witterel",
+  "Nunzio Pasqua",
+  "Emily Jackson",
+  "Miss Jane Bird",
+  "Bun-Lan Lim",
+  "It-Beng Sia",
+  "Chioh Tan",
+  "Hok-Seng Lau",
+  "Zungi Sathi",
+  "Fillip Dahl",
+  "Paul Moss",
+  "Samuel Galligan",
+  "Roderick Andersen",
+  "Davey James",
+  "Peter Milroy",
+  "Thomas Lanke",
+  "Charles Hershtik",
+  "Omid Gul",
+  "Timothy Butement",
+  "Huang Li",
+  "Jie Zhang",
+  "Li Hong",
+  "Wei Lee",
+  "Nicholas Botterill",
+  "Maba",
+  "Lewis Walker",
+  "Leonid Volkov",
+  "Patrick O'Hagan",
+  "Henry Brennan",
+  "Alexander Booth",
+  "Nathan Peters",
+  "John Naples",
+  "Seamus Lorry",
+  "Christian Larsen",
+  "George Shirley",
+  "Alarcus Nikishin",
+  "William Wasim",
+  "Charles Thomas",
+  "Henry Moss",
+  "Samuel Peters"
+];
+    const causes = [
+  "Unknown",
+  // Alive outcomes
+  "Alive in Azores",
+  "Alive in Africa",
+  "Alive in England",
+  "Alive in France",
+  "Alive in India",
+  "Alive in Italy",
+  "Alive in China",
+  "Alive in Formosa",
+
+  // Death outcomes
+  "Suicide (Gun)",
+  "Suicide (Knife)",
+  "Suicide (Noose)",
+  "Suicide (Spear)",
+  "Axed",
+  "Burned",
+  "Clawed",
+  "Clubbed",
+  "Crushed",
+  "Crushed (Cannon)",
+  "Crushed (Cargo)",
+  "Crushed (Rigging)",
+  "Crushed (Stones)",
+  "Decapitated",
+  "Drowned",
+  "Eaten",
+  "Electrocuted",
+  "Exploded",
+  "Fell (Overboard)",
+  "Fell (Rigging)",
+  "Fell (Stairs)",
+  "Illness",
+  "Killed (Sword)",
+  "Knifed",
+  "Poisoned",
+  "Shot (Arrow)",
+  "Shot (Cannon)",
+  "Shot (Gun)",
+  "Speared",
+  "Spiked",
+  "Strangled",
+  "Struck (Hooves)",
+  "Struck (Tail)",
+  "Struck (Wing)",
+  "Torn Apart"
+];
+    const killers = [
+  "Unknown",
+  // Crew & passengers (60 names)
+  "Robert Witterel",
+  "William Hoscut",
+  "Edward Nichols",
+  "Martin Perrott",
+  "John Davies",
+  "Alfred Klestil",
+  "Charles Miner",
+  "Henry Evans",
+  "James Wallace",
+  "Winston Smith",
+  "Marcus Gibbs",
+  "Thomas Sefton",
+  "Emil O'Farrell",
+  "Christian Wolff",
+  "Olus Wiater",
+  "Duncan McKay",
+  "Finley Dalton",
+  "Edward Spratt",
+  "Abigail Hoscut Witterel",
+  "Nunzio Pasqua",
+  "Emily Jackson",
+  "Miss Jane Bird",
+  "Bun-Lan Lim",
+  "It-Beng Sia",
+  "Chioh Tan",
+  "Hok-Seng Lau",
+  "Zungi Sathi",
+  "Fillip Dahl",
+  "Paul Moss",
+  "Samuel Galligan",
+  "Roderick Andersen",
+  "Davey James",
+  "Peter Milroy",
+  "Thomas Lanke",
+  "Charles Hershtik",
+  "Omid Gul",
+  "Timothy Butement",
+  "Huang Li",
+  "Jie Zhang",
+  "Li Hong",
+  "Wei Lee",
+  "Nicholas Botterill",
+  "Maba",
+  "Lewis Walker",
+  "Leonid Volkov",
+  "Patrick O'Hagan",
+  "Henry Brennan",
+  "Alexander Booth",
+  "Nathan Peters",
+  "John Naples",
+  "Seamus Lorry",
+  "Christian Larsen",
+  "George Shirley",
+  "Alarcus Nikishin",
+  "William Wasim",
+  "Charles Thomas",
+  "Henry Moss",
+  "Samuel Peters",
+
+  // Non-human killers
+  "Beast",
+
+  // Special killers
+  "Formosan Guard",
+  "Unknown Assassin",
+  "Canibalized",
+
+  // No killer (self-inflicted or natural)
+  "None"
+];
+
+
+    // Dictionary: "Chapter-Part" -> { name, cause, killer }
+    const storyDict = {
+      // Chapter I: Loose Cargo
+      // Chapter II: A Bitter cold
+      // Chapter III: Murder
+      "III-1": { name: "Nunzio Pasqua", cause: "Knifed", killer: "Edward Nichols" },
+      "III-2": { name: "Hok-Seng Lau", cause: "Shot (Gun)", killer: "Henry Brennan" },
+      // Chapter IV: The Calling
+      "IV-4": { name: "Bun-Lan Lim", cause: "Clawed", killer: "Beast" },
+      "IV-5": { name: "It-Beng Sia", cause: "Burned", killer: "None" },
+      "IV-6": { name: "Edward Nichols", cause: "Shot (Gun)", killer: "Chioh Tan" },
+      // Chapter V: Unholy Captives
+      "V-1": { name: "Chioh Tan", cause: "Spiked", killer: "Beast" },
+      // Chapter VI: Soldiers of The Sea
+      "VI-4": { name: "James Wallace", cause: "Strangled", killer: "Beast" },
+      // Chapter VII: The Doom
+      "VII-2": { name: "Edward Spratt", cause: "Crushed", killer: "Beast" },
+      "VII-4": { name: "Christian Wolff", cause: "Shot (Cannon)", killer: "Beast" },
+      "VII-8": { name: "Abigail Hoscut Witterel", cause: "Crushed (Rigging)", killer: "None" },
+      // Chapter VIII: Bargain
+      // Chapter IX: Escape
+      // Chapter X: The End
+      "X-1": { name: "William Hoscut", cause: "Shot (Gun)", killer: "Robert Witterel" },
+      "X-4": { name: "Robert Witterel", cause: "Suicide (Gun)", killer: "None" },
+    };
+
+    const chapterSelect = document.getElementById("chapter");
+    const partSelect = document.getElementById("part");
+    const nameSelect = document.getElementById("name");
+    const causeSelect = document.getElementById("cause");
+    const killerSelect = document.getElementById("killer");
+
+    function fillOptions(select, options) {
+      select.innerHTML = "";
+      options.forEach(opt => {
+        const o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        select.appendChild(o);
+      });
+    }
+
+    fillOptions(nameSelect, names);
+    fillOptions(causeSelect, causes);
+    fillOptions(killerSelect, killers);
+
+    const chapters = [...new Set(Object.keys(storyDict).map(k => k.split("-")[0]))];
+    chapters.forEach(ch => {
+      const o = document.createElement("option");
+      o.value = ch;
+      o.textContent = ch;
+      chapterSelect.appendChild(o);
+    });
+
+    chapterSelect.addEventListener("change", () => {
+      const selectedChapter = chapterSelect.value;
+      const parts = Object.keys(storyDict)
+        .filter(key => key.startsWith(selectedChapter + "-"))
+        .map(key => key.split("-")[1]);
+      fillOptions(partSelect, parts);
+      validateSelections(); // update colors on chapter change
+    });
+
+    function setValid(el, isValid) {
+      if (isValid) {
+        el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--valid-bg').trim();
+        el.style.color = getComputedStyle(document.body).getPropertyValue('--valid-fg').trim();
+        el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--valid-border').trim();
+      } else {
+        el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--invalid-bg').trim();
+        el.style.color = getComputedStyle(document.body).getPropertyValue('--invalid-fg').trim();
+        el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--invalid-border').trim();
+      }
+    }
+
+    function resetStyle(el) {
+      el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--select-bg').trim();
+      el.style.color = getComputedStyle(document.body).getPropertyValue('--fg').trim();
+      el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--select-border').trim();
+    }
+
+    function validateSelections() {
+      const key = `${chapterSelect.value}-${partSelect.value}`;
+      const correct = storyDict[key];
+      if (!correct) {
+        [nameSelect, causeSelect, killerSelect].forEach(resetStyle);
+        return;
+      }
+
+      setValid(nameSelect, nameSelect.value === correct.name);
+      setValid(causeSelect, causeSelect.value === correct.cause);
+      setValid(killerSelect, killerSelect.value === correct.killer);
+    }
+
+    [partSelect, nameSelect, causeSelect, killerSelect].forEach(sel => {
+      sel.addEventListener("change", validateSelections);
+    });
+
+    // Initialize defaults
+    chapterSelect.value = chapters[0];
+    chapterSelect.dispatchEvent(new Event("change"));
+    partSelect.dispatchEvent(new Event("change"));
+
+    // Dark mode default
+    // body uses dark variables by default; toggle switches to light by adding .light
+    const toggleBtn = document.getElementById("toggleMode");
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      // Re-apply styles after theme change to keep colors consistent
+      validateSelections();
+    });
+  </script>
+</body>
+</html>
