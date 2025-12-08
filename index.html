@@ -83,6 +83,30 @@
       box-shadow: 0 0 0 3px rgba(100, 150, 250, 0.25);
     }
 
+    select.partial {
+        background-color: #fbc02d; /* amber/yellow */
+        color: #000;
+        border-color: #f57f17;
+    }
+
+    select.valid {
+        background-color: var(--valid-bg);
+        color: var(--valid-fg);
+        border-color: var(--valid-border);
+    }
+
+    select.invalid {
+        background-color: var(--invalid-bg);
+        color: var(--invalid-fg);
+        border-color: var(--invalid-border);
+    }
+
+    select.partial {
+        background-color: #fbc02d; /* yellow */
+        color: #000;
+        border-color: #f57f17;
+    }
+
     /* Toggle button */
     #toggleMode {
       position: fixed;
@@ -99,394 +123,453 @@
   </style>
 </head>
 <body>
-  <button id="toggleMode">Toggle Dark mode</button>
+    <button id="toggleMode">Toggle Dark mode</button>
 
-  <h2>Story selector</h2>
-  <label>Chapter:</label>
-  <select id="chapter"></select>
+    <h2>Story selector</h2>
+    <label>Chapter:</label>
+    <select id="chapter"></select>
 
-  <label>Part:</label>
-  <select id="part"></select>
+    <label>Part:</label>
+    <select id="part"></select>
 
-  <label>Name:</label>
-  <select id="name"></select>
+    <label>Name:</label>
+    <select id="name"></select>
 
-  <label>Cause of death:</label>
-  <select id="cause"></select>
+    <label>Cause of death:</label>
+    <select id="cause"></select>
 
-  <label>Killer:</label>
-  <select id="killer"></select>
+    <label>Killer:</label>
+    <select id="killer"></select>
 
-  <script>
-    // Editable backend lists
-    const names = [
-  "Unknown",
-  "Robert Witterel",
-  "William Hoscut",
-  "Edward Nichols",
-  "Martin Perrott",
-  "John Davies",
-  "Alfred Klestil",
-  "Charles Miner",
-  "Henry Evans",
-  "James Wallace",
-  "Winston Smith",
-  "Marcus Gibbs",
-  "Thomas Sefton",
-  "Emil O'Farrell",
-  "Christian Wolff",
-  "Olus Wiater",
-  "Duncan McKay",
-  "Finley Dalton",
-  "Edward Spratt",
-  "Abigail Hoscut Witterel",
-  "Nunzio Pasqua",
-  "Emily Jackson",
-  "Miss Jane Bird",
-  "Bun-Lan Lim",
-  "It-Beng Sia",
-  "Chioh Tan",
-  "Hok-Seng Lau",
-  "Zungi Sathi",
-  "Fillip Dahl",
-  "Paul Moss",
-  "Samuel Galligan",
-  "Roderick Andersen",
-  "Davey James",
-  "Peter Milroy",
-  "Thomas Lanke",
-  "Charles Hershtik",
-  "Omid Gul",
-  "Timothy Butement",
-  "Huang Li",
-  "Jie Zhang",
-  "Li Hong",
-  "Wei Lee",
-  "Nicholas Botterill",
-  "Maba",
-  "Lewis Walker",
-  "Leonid Volkov",
-  "Alarcus Nikishin",
-  "Aleksei Toporov",
-  "Nathan Peters",
-  "Lars Linde",
-  "John Naples",
-  "Ranfred Rajub",
-  "Abraham Akbar",
-  "William Wasim",
-  "Solomon Syed",
-  "Hamadou Diom",
-  "Henry Brennan",
-  "Alexander Booth",
-  "Patrick O'Hagan",
-  "George Shirley",
-  "Samuel Peters"
-];
-    const causes = [
-  "Unknown",
-  // Alive outcomes
-  "Alive in Azores",
-  "Alive in Africa",
-  "Alive in England",
-  "Alive in France",
-  "Alive in India",
-  "Alive in Italy",
-  "Alive in China",
-  "Alive in Formosa",
+    <script>
+        // Editable backend lists
+        const names = [
+            "Unknown",
+            "Robert Witterel",
+            "William Hoscut",
+            "Edward Nichols",
+            "Martin Perrott",
+            "John Davies",
+            "Alfred Klestil",
+            "Charles Miner",
+            "Henry Evans",
+            "James Wallace",
+            "Winston Smith",
+            "Marcus Gibbs",
+            "Thomas Sefton",
+            "Emil O'Farrell",
+            "Christian Wolff",
+            "Olus Wiater",
+            "Duncan McKay",
+            "Finley Dalton",
+            "Edward Spratt",
+            "Abigail Hoscut Witterel",
+            "Nunzio Pasqua",
+            "Emily Jackson",
+            "Miss Jane Bird",
+            "Bun-Lan Lim",
+            "It-Beng Sia",
+            "Chioh Tan",
+            "Hok-Seng Lau",
+            "Zungi Sathi",
+            "Fillip Dahl",
+            "Paul Moss",
+            "Samuel Galligan",
+            "Roderick Andersen",
+            "Davey James",
+            "Peter Milroy",
+            "Thomas Lanke",
+            "Charles Hershtik",
+            "Omid Gul",
+            "Timothy Butement",
+            "Huang Li",
+            "Jie Zhang",
+            "Li Hong",
+            "Wei Lee",
+            "Nicholas Botterill",
+            "Maba",
+            "Lewis Walker",
+            "Leonid Volkov",
+            "Alarcus Nikishin",
+            "Aleksei Toporov",
+            "Nathan Peters",
+            "Lars Linde",
+            "John Naples",
+            "Ranfred Rajub",
+            "Abraham Akbar",
+            "William Wasim",
+            "Solomon Syed",
+            "Hamadou Diom",
+            "Henry Brennan",
+            "Alexander Booth",
+            "Patrick O'Hagan",
+            "George Shirley",
+            "Samuel Peters"
+        ];
+        const causes = [
+            "Unknown",
+            // Alive outcomes
+            "Alive in Azores",
+            "Alive in Africa",
+            "Alive in England",
+            "Alive in France",
+            "Alive in India",
+            "Alive in Italy",
+            "Alive in China",
+            "Alive in Formosa",
 
-  // Death outcomes
-  "Suicide (Gun)",
-  "Suicide (Knife)",
-  "Suicide (Noose)",
-  "Suicide (Spear)",
-  "Axed",
-  "Burned",
-  "Clawed",
-  "Clubbed",
-  "Crushed",
-  "Crushed (Cannon)",
-  "Crushed (Cargo)",
-  "Crushed (Rigging)",
-  "Crushed (Stones)",
-  "Decapitated",
-  "Drowned",
-  "Eaten",
-  "Electrocuted",
-  "Exploded",
-  "Fell (Overboard)",
-  "Fell (Rigging)",
-  "Fell (Stairs)",
-  "Illness",
-  "Killed (Sword)",
-  "Knifed",
-  "Poisoned",
-  "Shot (Arrow)",
-  "Shot (Cannon)",
-  "Shot (Gun)",
-  "Speared",
-  "Spiked",
-  "Strangled",
-  "Struck (Hooves)",
-  "Struck (Tail)",
-  "Struck (Wing)",
-  "Torn Apart"
-];
-    const killers = [
-  "Unknown",
-  // Crew & passengers (60 names)
-  "Robert Witterel",
-  "William Hoscut",
-  "Edward Nichols",
-  "Martin Perrott",
-  "John Davies",
-  "Alfred Klestil",
-  "Charles Miner",
-  "Henry Evans",
-  "James Wallace",
-  "Winston Smith",
-  "Marcus Gibbs",
-  "Thomas Sefton",
-  "Emil O'Farrell",
-  "Christian Wolff",
-  "Olus Wiater",
-  "Duncan McKay",
-  "Finley Dalton",
-  "Edward Spratt",
-  "Abigail Hoscut Witterel",
-  "Nunzio Pasqua",
-  "Emily Jackson",
-  "Miss Jane Bird",
-  "Bun-Lan Lim",
-  "It-Beng Sia",
-  "Chioh Tan",
-  "Hok-Seng Lau",
-  "Zungi Sathi",
-  "Fillip Dahl",
-  "Paul Moss",
-  "Samuel Galligan",
-  "Roderick Andersen",
-  "Davey James",
-  "Peter Milroy",
-  "Thomas Lanke",
-  "Charles Hershtik",
-  "Omid Gul",
-  "Timothy Butement",
-  "Huang Li",
-  "Jie Zhang",
-  "Li Hong",
-  "Wei Lee",
-  "Nicholas Botterill",
-  "Maba",
-  "Lewis Walker",
-  "Leonid Volkov",
-  "Alarcus Nikishin",
-  "Aleksei Toporov",
-  "Nathan Peters",
-  "Lars Linde",
-  "John Naples",
-  "Ranfred Rajub",
-  "Abraham Akbar",
-  "William Wasim",
-  "Solomon Syed",
-  "Hamadou Diom",
-  "Henry Brennan",
-  "Alexander Booth",
-  "Patrick O'Hagan",
-  "George Shirley",
-  "Samuel Peters",
+            // Death outcomes
+            "Suicide (Gun)",
+            "Suicide (Knife)",
+            "Suicide (Noose)",
+            "Suicide (Spear)",
+            "Axed",
+            "Burned",
+            "Clawed",
+            "Clubbed",
+            "Crushed",
+            "Crushed (Cannon)",
+            "Crushed (Cargo)",
+            "Crushed (Rigging)",
+            "Crushed (Stones)",
+            "Decapitated",
+            "Drowned",
+            "Eaten",
+            "Electrocuted",
+            "Exploded",
+            "Fell (Overboard)",
+            "Fell (Rigging)",
+            "Fell (Stairs)",
+            "Illness",
+            "Killed (Sword)",
+            "Knifed",
+            "Poisoned",
+            "Shot (Arrow)",
+            "Shot (Cannon)",
+            "Shot (Gun)",
+            "Speared",
+            "Spiked",
+            "Strangled",
+            "Struck (Hooves)",
+            "Struck (Tail)",
+            "Struck (Wing)",
+            "Torn Apart"
+        ];
+        const killers = [
+            "Unknown",
+            // Crew & passengers (60 names)
+            "Robert Witterel",
+            "William Hoscut",
+            "Edward Nichols",
+            "Martin Perrott",
+            "John Davies",
+            "Alfred Klestil",
+            "Charles Miner",
+            "Henry Evans",
+            "James Wallace",
+            "Winston Smith",
+            "Marcus Gibbs",
+            "Thomas Sefton",
+            "Emil O'Farrell",
+            "Christian Wolff",
+            "Olus Wiater",
+            "Duncan McKay",
+            "Finley Dalton",
+            "Edward Spratt",
+            "Abigail Hoscut Witterel",
+            "Nunzio Pasqua",
+            "Emily Jackson",
+            "Miss Jane Bird",
+            "Bun-Lan Lim",
+            "It-Beng Sia",
+            "Chioh Tan",
+            "Hok-Seng Lau",
+            "Zungi Sathi",
+            "Fillip Dahl",
+            "Paul Moss",
+            "Samuel Galligan",
+            "Roderick Andersen",
+            "Davey James",
+            "Peter Milroy",
+            "Thomas Lanke",
+            "Charles Hershtik",
+            "Omid Gul",
+            "Timothy Butement",
+            "Huang Li",
+            "Jie Zhang",
+            "Li Hong",
+            "Wei Lee",
+            "Nicholas Botterill",
+            "Maba",
+            "Lewis Walker",
+            "Leonid Volkov",
+            "Alarcus Nikishin",
+            "Aleksei Toporov",
+            "Nathan Peters",
+            "Lars Linde",
+            "John Naples",
+            "Ranfred Rajub",
+            "Abraham Akbar",
+            "William Wasim",
+            "Solomon Syed",
+            "Hamadou Diom",
+            "Henry Brennan",
+            "Alexander Booth",
+            "Patrick O'Hagan",
+            "George Shirley",
+            "Samuel Peters",
 
-  // Non-human killers
-  "Beast",
+            // Non-human killers
+            "Beast",
 
-  // Special killers
-  "Formosan Guard",
-  "Unknown Assassin",
-  "Canibalized",
+            // Special killers
+            "Formosan Guard",
+            "Unknown Assassin",
+            "Canibalized",
 
-  // No killer (self-inflicted or natural)
-  "None"
-];
+            // No killer (self-inflicted or natural)
+            "None"
+        ];
 
 
-    // Dictionary: "Chapter-Part" -> { name, cause, killer }
-    const storyDict = {
-      // Chapter I: Loose Cargo
-      "I-1": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "I-2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      // Chapter II: A Bitter cold
-      "II-1": { name: "Solomon Syed", cause: "Illness", killer: "None" },
-      "II-2": { name: "Renfred Rajub", cause: "Illness", killer: "None" },
-      // Chapter III: Murder
-      "III-1": { name: "Nunzio Pasqua", cause: "Knifed", killer: "Edward Nichols" },
-      "III-2": { name: "Hok-Seng Lau", cause: "Shot (Gun)", killer: "Henry Brennan" },
-      "III-3": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      // Chapter IV: The Calling
-      "IV-1": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IV-2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IV-3": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IV-4": { name: "Bun-Lan Lim", cause: "Clawed", killer: "Beast" },
-      "IV-5": { name: "It-Beng Sia", cause: "Burned", killer: "None" },
-      "IV-6": { name: "Edward Nichols", cause: "Shot (Gun)", killer: "Chioh Tan" },
-      "IV-conclusion1": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IV-conclusion2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      // Chapter V: Unholy Captives
-      "V-1.1": { name: "Chioh Tan", cause: "Spiked", killer: "Beast" },
-      "V-1.2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "V-2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "V-3": { name: "William Wasim", cause: "Fell (Stairs)", killer: "None" },
-      "V-4": { name: "John Naples", cause: "Killed (Sword)", killer: "Fillip Dahl" },
-      // Chapter VI: Soldiers of The Sea
-      "VI-1": { name: "Huang Li", cause: "Electrocuted", killer: "None" },
-      "VI-2": { name: "Nicholas Botterill", cause: "Speared", killer: "Beast" },
-      "VI-3": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VI-4.1": { name: "James Wallace", cause: "Strangled", killer: "Beast" },
-      "VI-4.2": { name: "Jie Zhang", cause: "Strangled", killer: "Beast" },
-      "VI-5": { name: "Charles Hershtik", cause: "Spiked", killer: "Beast" },
-      "VI-6": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VI-7": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VI-8": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      // Chapter VII: The Doom
-      "VII-1": { name: "Lars Linde", cause: "Clubbed", killer: "Nathan Peters" },
-      "VII-2": { name: "Edward Spratt", cause: "Crushed", killer: "Beast" },
-      "VII-3": { name: "Abraham Akbar", cause: "Crushed", killer: "Beast" },
-      "VII-4.1": { name: "Christian Wolff", cause: "Shot (Cannon)", killer: "Beast" },
-      "VII-4.2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VII-5": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VII-6": { name: "Peter Milroy", cause: "Exploded", killer: "None" },
-      "VII-7": { name: "Maba", cause: "Torn Apart", killer: "Beast" },
-      "VII-8": { name: "Abigail Hoscut Witterel", cause: "Crushed (Rigging)", killer: "None" },
-      "VII-conclusion1": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VII-conclusion2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VII-conclusion3": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VII-conclusion4": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VII-conclusion5": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VII-conclusion6": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VII-conclusion7": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      // Chapter VIII: Bargain
-      "VIII-1": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VIII-2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VIII-3": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VIII-4": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "VIII-5": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      // Chapter IX: Escape
-      "IX-1": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IX-2": { name: "Paul Moss", cause: "Killed (Sword)", killer: "Leonid Volkov" },
-      "IX-3": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IX-4": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IX-5": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IX-6": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IX-conclusion1": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IX-conclusion2": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IX-conclusion3": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      "IX-conclusion4": { name: "Unknown", cause: "Unknown", killer: "Unknown" },
-      // Chapter X: The End
-      "X-1": { name: "William Hoscut", cause: "Shot (Gun)", killer: "Robert Witterel" },
-      "X-2": { name: "Henry Brennan", cause: "Knifed", killer: "Robert Witterel" },
-      "X-3": { name: "Lewis Walker", cause: "Clubbed", killer: "Robert Witterel" },
-      "X-4": { name: "Robert Witterel", cause: "Suicide (Gun)", killer: "None" },
-    };
+        // Dictionary: "Chapter-Part" -> { name, [cause, killer] }
+        const storyDict = {
+            // Chapter I: Loose Cargo
+            "I-1": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "I-2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
 
-    const chapterSelect = document.getElementById("chapter");
-    const partSelect = document.getElementById("part");
-    const nameSelect = document.getElementById("name");
-    const causeSelect = document.getElementById("cause");
-    const killerSelect = document.getElementById("killer");
+            // Chapter II: A Bitter cold
+            "II-1": { name: "Solomon Syed", pairs: [{ cause: "Illness", killer: "None" }] },
+            "II-2": { name: "Renfred Rajub", pairs: [{ cause: "Illness", killer: "None" }] },
 
-    function fillOptions(select, options) {
-      select.innerHTML = "";
-      options.forEach(opt => {
-        const o = document.createElement("option");
-        o.value = opt;
-        o.textContent = opt;
-        select.appendChild(o);
-      });
-    }
+            // Chapter III: Murder
+            "III-1": { name: "Nunzio Pasqua", pairs: [{ cause: "Knifed", killer: "Edward Nichols" }] },
+            "III-2": { name: "Hok-Seng Lau", pairs: [{ cause: "Shot (Gun)", killer: "Henry Brennan" }] },
+            "III-3": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
 
-    fillOptions(nameSelect, names);
-    fillOptions(causeSelect, causes);
-    fillOptions(killerSelect, killers);
+            // Chapter IV: The Calling
+            "IV-1": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IV-2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IV-3": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IV-4": { name: "Bun-Lan Lim", pairs: [{ cause: "Clawed", killer: "Beast" }] },
+            "IV-5": { name: "It-Beng Sia", pairs: [{ cause: "Burned", killer: "None" }] },
+            "IV-6": { name: "Edward Nichols", pairs: [{ cause: "Shot (Gun)", killer: "Chioh Tan" }] },
+            "IV-conclusion1": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IV-conclusion2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
 
-    const chapters = [...new Set(Object.keys(storyDict).map(k => k.split("-")[0]))];
-    chapters.forEach(ch => {
-      const o = document.createElement("option");
-      o.value = ch;
-      o.textContent = ch;
-      chapterSelect.appendChild(o);
-    });
+            // Chapter V: Unholy Captives
+            "V-1.1": { name: "Chioh Tan", pairs: [{ cause: "Spiked", killer: "Beast" }] },
+            "V-1.2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "V-2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "V-3": { name: "William Wasim", pairs: [{ cause: "Fell (Stairs)", killer: "None" }] },
+            "V-4": { name: "John Naples", pairs: [{ cause: "Killed (Sword)", killer: "Fillip Dahl" }] },
 
-    chapterSelect.addEventListener("change", () => {
-      const selectedChapter = chapterSelect.value;
-      const parts = Object.keys(storyDict)
-        .filter(key => key.startsWith(selectedChapter + "-"))
-        .map(key => key.split("-")[1]);
-      fillOptions(partSelect, parts);
-      validateSelections(); // update colors on chapter change
-    });
+            // Chapter VI: Soldiers of The Sea
+            "VI-1": { name: "Huang Li", pairs: [{ cause: "Electrocuted", killer: "None" }] },
+            "VI-2": { name: "Nicholas Botterill", pairs: [{ cause: "Speared", killer: "Beast" }] },
+            "VI-3": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VI-4.1": { name: "James Wallace", pairs: [{ cause: "Strangled", killer: "Beast" }] },
+            "VI-4.2": { name: "Jie Zhang", pairs: [{ cause: "Strangled", killer: "Beast" }] },
+            "VI-5": { name: "Charles Hershtik", pairs: [{ cause: "Spiked", killer: "Beast" }] },
+            "VI-6": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VI-7": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VI-8": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
 
-    function setValid(el, isValid) {
-      if (isValid) {
-        el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--valid-bg').trim();
-        el.style.color = getComputedStyle(document.body).getPropertyValue('--valid-fg').trim();
-        el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--valid-border').trim();
-      } else {
-        el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--invalid-bg').trim();
-        el.style.color = getComputedStyle(document.body).getPropertyValue('--invalid-fg').trim();
-        el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--invalid-border').trim();
-      }
-    }
+            // Chapter VII: The Doom
+            "VII-1": { name: "Lars Linde", pairs: [{ cause: "Clubbed", killer: "Nathan Peters" }] },
+            "VII-2": { name: "Edward Spratt", pairs: [{ cause: "Crushed", killer: "Beast" }] },
+            "VII-3": { name: "Abraham Akbar", pairs: [{ cause: "Crushed", killer: "Beast" }] },
+            "VII-4.1": { name: "Christian Wolff", pairs: [{ cause: "Shot (Cannon)", killer: "Beast" }] },
+            "VII-4.2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-5": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-6": { name: "Peter Milroy", pairs: [{ cause: "Exploded", killer: "None" }] },
+            "VII-7": { name: "Maba", pairs: [{ cause: "Torn Apart", killer: "Beast" }] },
+            "VII-8": { name: "Abigail Hoscut Witterel", pairs: [{ cause: "Crushed (Rigging)", killer: "None" }] },
+            "VII-conclusion1": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-conclusion2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-conclusion3": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-conclusion4": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-conclusion5": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-conclusion6": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-conclusion7": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
 
-    function resetStyle(el) {
-      el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--select-bg').trim();
-      el.style.color = getComputedStyle(document.body).getPropertyValue('--fg').trim();
-      el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--select-border').trim();
-    }
+            // Chapter VIII: Bargain
+            "VIII-1": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VIII-2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VIII-3": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VIII-4": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VIII-5": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
 
-    function validateSelections() {
-      const key = `${chapterSelect.value}-${partSelect.value}`;
-      const correct = storyDict[key];
-      if (!correct) {
-        [nameSelect, causeSelect, killerSelect].forEach(resetStyle);
-        return;
-      }
+            // Chapter IX: Escape
+            "IX-1": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IX-2": { name: "Paul Moss", pairs: [{ cause: "Killed (Sword)", killer: "Leonid Volkov" }] },
+            "IX-3": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IX-4": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IX-5": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IX-6": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IX-conclusion1": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IX-conclusion2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IX-conclusion3": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "IX-conclusion4": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
 
-      setValid(nameSelect, nameSelect.value === correct.name);
-      setValid(causeSelect, causeSelect.value === correct.cause);
-      setValid(killerSelect, killerSelect.value === correct.killer);
-    }
+            // Chapter X: The End
+            "X-1": { name: "William Hoscut", pairs: [{ cause: "Shot (Gun)", killer: "Robert Witterel" }] },
+            "X-2": { name: "Henry Brennan", pairs: [{ cause: "Knifed", killer: "Robert Witterel" }] },
+            "X-3": { name: "Lewis Walker", pairs: [{ cause: "Clubbed", killer: "Robert Witterel" }] },
+            "X-4": { name: "Robert Witterel", pairs: [{ cause: "Suicide (Gun)", killer: "None" }] },
 
-    [partSelect, nameSelect, causeSelect, killerSelect].forEach(sel => {
-      sel.addEventListener("change", validateSelections);
-    });
+            // Test
+            "Test-1": { name: "Robert Witterel", pairs: [{ cause: "Suicide (Gun)", killer: "None" }, { cause: "Spiked", killer: "Beast" }] }
+        };
 
-    // Initialize defaults
-    chapterSelect.value = chapters[0];
-    chapterSelect.dispatchEvent(new Event("change"));
-    partSelect.dispatchEvent(new Event("change"));
 
-    // Dark mode default
-    // body uses dark variables by default; toggle switches to light by adding .light
-    const toggleBtn = document.getElementById("toggleMode");
-    toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("light");
-      // Re-apply styles after theme change to keep colors consistent
-      validateSelections();
-    });
-  </script>
-  </br>
-  </br>
-  </br>
-  </br>
-  </br>
-  </br>
-  <a style="color:red">DISCLAIMER:</a>
-  <div>At the moment, only 27 fates are available in this fact-checker. I will fill more fates as I complete the game.</div>
-  </br>
-  <a style="color:green">How to use:</a>
-  <div>Select the chapter and part from the dropdowns and then fill the information you discovered in the other fields.</div>
-  <div>The fields will become <a style="color:green">green</a> if true and <a style="color:red">red</a> if false.</div>
-  <div>If selecting "Unknown" shows up as true, then that fate has not yet been added.</div>
-  </br>
-  </br>
-  <div>Do you want to help fill the missing fates? Contact me at mihaitza165@gmail.com. I promise I won't look until I've completed the game :)</div>
+        const chapterSelect = document.getElementById("chapter");
+        const partSelect = document.getElementById("part");
+        const nameSelect = document.getElementById("name");
+        const causeSelect = document.getElementById("cause");
+        const killerSelect = document.getElementById("killer");
+
+        function fillOptions(select, options) {
+            select.innerHTML = "";
+            options.forEach(opt => {
+                const o = document.createElement("option");
+                o.value = opt;
+                o.textContent = opt;
+                select.appendChild(o);
+            });
+        }
+
+        fillOptions(nameSelect, names);
+        fillOptions(causeSelect, causes);
+        fillOptions(killerSelect, killers);
+
+        const chapters = [...new Set(Object.keys(storyDict).map(k => k.split("-")[0]))];
+        chapters.forEach(ch => {
+            const o = document.createElement("option");
+            o.value = ch;
+            o.textContent = ch;
+            chapterSelect.appendChild(o);
+        });
+
+        chapterSelect.addEventListener("change", () => {
+            const selectedChapter = chapterSelect.value;
+            const parts = Object.keys(storyDict)
+                .filter(key => key.startsWith(selectedChapter + "-"))
+                .map(key => key.split("-")[1]);
+            fillOptions(partSelect, parts);
+            validateSelections(); // update colors on chapter change
+        });
+
+        function setValid(el, isValid) {
+            if (isValid) {
+                el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--valid-bg').trim();
+                el.style.color = getComputedStyle(document.body).getPropertyValue('--valid-fg').trim();
+                el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--valid-border').trim();
+            } else {
+                el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--invalid-bg').trim();
+                el.style.color = getComputedStyle(document.body).getPropertyValue('--invalid-fg').trim();
+                el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--invalid-border').trim();
+            }
+        }
+
+        function resetStyle(el) {
+            el.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--select-bg').trim();
+            el.style.color = getComputedStyle(document.body).getPropertyValue('--fg').trim();
+            el.style.borderColor = getComputedStyle(document.body).getPropertyValue('--select-border').trim();
+        }
+
+        function validateSelections() {
+            const key = `${chapterSelect.value}-${partSelect.value}`;
+            const entry = storyDict[key];
+            const notice = document.getElementById("partialNotice");
+
+            if (!entry) {
+                [nameSelect, causeSelect, killerSelect].forEach(resetStyle);
+                notice.style.display = "none";
+                return;
+            }
+
+            setValid(nameSelect, nameSelect.value === entry.name);
+
+            const selectedCause = causeSelect.value;
+            const selectedKiller = killerSelect.value;
+
+            let causeMatch = false;
+            let killerMatch = false;
+            let pairMatch = false;
+
+            entry.pairs.forEach(pair => {
+                if (pair.cause === selectedCause && pair.killer === selectedKiller) {
+                    pairMatch = true;
+                }
+                if (pair.cause === selectedCause) causeMatch = true;
+                if (pair.killer === selectedKiller) killerMatch = true;
+            });
+
+            if (pairMatch) {
+                setValid(causeSelect, true);
+                setValid(killerSelect, true);
+                notice.style.display = "none"; // exact match → hide
+            } else if (causeMatch && killerMatch) {
+                setPartial(causeSelect);
+                setPartial(killerSelect);
+                notice.style.display = "block"; // partial match → show
+            } else {
+                setValid(causeSelect, causeMatch);
+                setValid(killerSelect, killerMatch);
+                notice.style.display = "none"; // no match → hide
+            }
+        }
+
+        function setValid(el, isValid) {
+            el.classList.remove("valid", "invalid", "partial");
+            el.classList.add(isValid ? "valid" : "invalid");
+        }
+
+        function setPartial(el) {
+            el.classList.remove("valid", "invalid", "partial");
+            el.classList.add("partial");
+        }
+
+
+        [partSelect, nameSelect, causeSelect, killerSelect].forEach(sel => {
+            sel.addEventListener("change", validateSelections);
+        });
+
+        // Initialize defaults
+        chapterSelect.value = chapters[0];
+        chapterSelect.dispatchEvent(new Event("change"));
+        partSelect.dispatchEvent(new Event("change"));
+
+        // Dark mode default
+        // body uses dark variables by default; toggle switches to light by adding .light
+        const toggleBtn = document.getElementById("toggleMode");
+        toggleBtn.addEventListener("click", () => {
+            document.body.classList.toggle("light");
+            // Re-apply styles after theme change to keep colors consistent
+            validateSelections();
+        });
+    </script>
+    </br>
+    </br>
+    <div id="partialNotice" style="display:none; margin-top:10px; color:#fbc02d; font-weight:bold;">
+        ⚠️ You selected a valid cause and a valid killer, but they belong to different fates.
+        This means your choices are correct individually, but not as a pair.
+    </div>
+
+    </br>
+    </br>
+    </br>
+    </br>
+    <a style="color:red">DISCLAIMER:</a>
+    <div>At the moment, only 27 fates are available in this fact-checker. I will fill more fates as I complete the game.</div>
+    </br>
+    <a style="color:green">How to use:</a>
+    <div>Select the chapter and part from the dropdowns and then fill the information you discovered in the other fields.</div>
+    <div>The fields will become <a style="color:green">green</a> if true and <a style="color:red">red</a> if false.</div>
+    <div>If selecting "Unknown" shows up as true, then that fate has not yet been added.</div>
+    </br>
+    </br>
+    <div>Do you want to help fill the missing fates? Contact me at mihaitza165@gmail.com. I promise I won't look until I've completed the game :)</div>
 </body>
 </html>
