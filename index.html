@@ -257,6 +257,10 @@
         ];
         const killers = [
             "Unknown",
+            // No killer (self-inflicted or natural)
+            "None",
+            // Non-human killers
+            "Beast",
             // Crew & passengers (60 names)
             "Robert Witterel",
             "William Hoscut",
@@ -319,16 +323,10 @@
             "George Shirley",
             "Samuel Peters",
 
-            // Non-human killers
-            "Beast",
-
             // Special killers
             "Formosan Guard",
             "Unknown Assassin",
-            "Canibalized",
-
-            // No killer (self-inflicted or natural)
-            "None"
+            "Canibalized"
         ];
 
 
@@ -371,7 +369,7 @@
             "VI-4.1": { name: "James Wallace", pairs: [{ cause: "Strangled", killer: "Beast" }] },
             "VI-4.2": { name: "Jie Zhang", pairs: [{ cause: "Strangled", killer: "Beast" }] },
             "VI-5": { name: "Charles Hershtik", pairs: [{ cause: "Spiked", killer: "Beast" }] },
-            "VI-6": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VI-6": { name: "Emil O'Farrell", pairs: [{ cause: "Spiked", killer: "Beast" }] },
             "VI-7": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
             "VI-8": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
 
@@ -385,8 +383,8 @@
             "VII-6": { name: "Peter Milroy", pairs: [{ cause: "Exploded", killer: "None" }] },
             "VII-7": { name: "Maba", pairs: [{ cause: "Torn Apart", killer: "Beast" }] },
             "VII-8": { name: "Abigail Hoscut Witterel", pairs: [{ cause: "Crushed (Rigging)", killer: "None" }] },
-            "VII-conclusion1": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
-            "VII-conclusion2": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
+            "VII-conclusion1": { name: "Omid Gul", pairs: [{ cause: "Fell (Overboard)", killer: "None" }, { cause: "Drowned", killer: "Beast" }] },
+            "VII-conclusion2": { name: "Nathan Peters", pairs: [{ cause: "Fell (Overboard)", killer: "None" }, { cause: "Drowned", killer: "Beast" }] },
             "VII-conclusion3": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
             "VII-conclusion4": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
             "VII-conclusion5": { name: "Unknown", pairs: [{ cause: "Unknown", killer: "Unknown" }] },
@@ -536,6 +534,16 @@
             sel.addEventListener("change", validateSelections);
         });
 
+        [chapterSelect, partSelect].forEach(element => {
+            element.addEventListener("change", resetDropdowns);
+        });
+        function resetDropdowns(){
+            // Reset dependent dropdowns
+            nameSelect.selectedIndex = 0;
+            causeSelect.selectedIndex = 0;
+            killerSelect.selectedIndex = 0;
+            validateSelections();
+        }
         // Initialize defaults
         chapterSelect.value = chapters[0];
         chapterSelect.dispatchEvent(new Event("change"));
@@ -562,7 +570,7 @@
     </br>
     </br>
     <a style="color:red">DISCLAIMER:</a>
-    <div>At the moment, only 27 fates are available in this fact-checker. I will fill more fates as I complete the game.</div>
+    <div>At the moment, only 30 fates are available in this fact-checker. I will fill more fates as I complete the game.</div>
     </br>
     <a style="color:green">How to use:</a>
     <div>Select the chapter and part from the dropdowns and then fill the information you discovered in the other fields.</div>
